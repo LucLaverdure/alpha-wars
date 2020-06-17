@@ -1,0 +1,69 @@
+<!doctype html>
+<html><head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Alpha Wars</title>
+  <style>
+	body {
+		text-align:center;
+		background: #000;
+	}
+	#screen {
+		margin: auto 0;
+	}
+	#kills {
+		color: #f00;
+		font-size:42px;
+		font-family: Arial;
+	}
+	#points {
+		color: #0f0;
+		font-size:42px;
+		float:right;
+		width:100%;
+		font-family: Arial;
+	}
+	#def {
+		margin-top:20px;
+		color: #fff;
+		font-style: italic;
+		font-family: Arial;
+		font-size:30px;
+	}
+	#def .word {
+		color: #a00;
+	}
+	#footer {
+		text-align:left;
+		color: #fff;
+		position:absolute;
+		left:0;
+		bottom:0;
+	}
+	#footer a {
+		color: #fff;
+	}
+	#footer p {
+		font-family: Arial;
+	}
+  </style>
+  <script src="jquery.min.js"></script></body>
+</head>
+<body>
+  <title>Alpha Wars</title>
+  <div id="dash">
+	<div id="points">
+		0
+	</div>
+	<div>
+		<canvas id="screen" width="800" height="600"></canvas>
+		<img id="bg" src="bgs/2.jpg" style="display:none;" />
+	</div>
+	<div id="kills"></div>
+	<div id="def"></div>
+	<div id="footer">
+		<p>Controls: Move [Up, Down, Left, Right], [Enter] Letters Combination, [Space] Punch
+		<p>&copy; <a href="http://LucLaverdure.com" target="_blank">Luc Laverdure</a></p>
+	</div>
+  </div>
+  <script src="main.js"></script></body>
+</html>
