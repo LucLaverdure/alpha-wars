@@ -19,10 +19,10 @@ var rects = [
 ]
 
 var enemies = [
-	{x: 60, y: 200, w: 20, h: 50, col: "f00", alpha: "B", hp: 50, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 650, y: 200, w: 100, h: 100, col: "f00", alpha: "A", hp: 20, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 200, y: 200, w: 20, h: 80, col: "f00", alpha: "B", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 350, y: 200, w: 20, h: 60, col: "f00", alpha: "E", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
+	{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: "B", hp: 50, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: "A", hp: 20, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: "B", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: "E", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
 ]
 
 var punch = {
@@ -139,7 +139,7 @@ function overlapTest(a, b) {
 // Move the rectangle p along vx then along vy, but only move
 // as far as we can without colliding with a solid rectangle
 function move(p, vx, vy) {
-  // Move rectangle along x axis
+  // Move player along x axis
   for (var i = 0; i < rects.length; i++) {
     var c = { x: p.x + vx, y: p.y, w: p.w, h: p.h }
     if (overlapTest(c, rects[i])) {
@@ -149,7 +149,7 @@ function move(p, vx, vy) {
   }
   p.x += vx
 
-  // Move rectangle along y axis
+  // Move player along y axis
   for (var i = 0; i < rects.length; i++) {
     var c = { x: p.x, y: p.y + vy, w: p.w, h: p.h }
     if (overlapTest(c, rects[i])) {
@@ -168,7 +168,7 @@ document.onkeyup = function(e) { keys[e.which] = false }
 
 // Player is a rectangle with extra properties
 //					x, y, w, h
-var player = rect(20, 20, 20, 10)
+var player = rect(20, 20, 20, 42)
 player.velocity = { x: 0, y: 0 }
 player.onFloor = false
 
@@ -203,12 +203,12 @@ function update() {
 		// punch right
 		punch.active = true;
 		punch.x = player.x + 40 - Math.floor(Math.random() * Math.floor(20));
-		punch.y = player.y - 10;
+		punch.y = player.y + 25;
 	} else {
 		// punch left
 		punch.active = true;
 		punch.x = player.x - Math.floor(Math.random() * Math.floor(20));
-		punch.y = player.y - 10;
+		punch.y = player.y + 25;
 	
 	}
 	if (punch.active) {
@@ -219,21 +219,7 @@ function update() {
 			if (overlapTest(p, e)) {
 				e.hp -= 1;
 				if (e.hp <= 0) {
-					e.hp = 0;
-					sndDie.play();
-					
-					// add killed letter
-					$("#kills").append(""+e.alpha);
-					
-					// add 1 point
-					addPoints(1);
-					
-					// fb?
-					if (!firstblood) {
-						sndBlood.play();
-						firstblood = true;
-					}
-					
+					kill(i);
 				} else {
 					sndPunch.play();
 				}
@@ -262,6 +248,7 @@ function update() {
   player.onFloor = (expectedY > player.y)
   if (expectedY != player.y) player.velocity.y = 0
 
+
 	// move enemies
   // Update the velocity
   for (var ii = 0; ii < enemies.length; ii++) {
@@ -272,6 +259,13 @@ function update() {
 	move(e, e.velocity.x, e.velocity.y)
 	e.onFloor = (expectedY > e.y)
 	if (expectedY != e.y) e.velocity.y = 0
+	// jump damage
+	if ( (player.velocity.y > 0) && (overlapTest(player, e)) ) {
+		sndPunch.play();
+		e.hp -= Math.floor(player.velocity.y / 2);
+		player.velocity.y = -10;
+		if (e.hp <= 0) kill(ii);
+	}
   }
 
   // Only jump when we're on the floor
@@ -279,6 +273,23 @@ function update() {
     player.velocity.y = -13
     sndJump.play()
   }
+}
+
+function kill(eID) {
+	enemies[eID].hp = 0;
+	sndDie.play();
+
+	// add killed letter
+	$("#kills").append(""+enemies[eID].alpha);
+
+	// add 1 point
+	addPoints(1);
+
+	// fb?
+	if (!firstblood) {
+		sndBlood.play();
+		firstblood = true;
+	}
 }
 
 // Renders a frame
@@ -292,18 +303,29 @@ function draw() {
   c.drawImage(img, 0, 0);
 
   // Draw player
-  c.fillStyle = '#0f0'
-  c.font = "35px Georgia";
-  c.fillText("P", player.x, player.y); 
-
+	c.fillStyle = '#0f0'
+	c.font = player.h+"px Georgia";
+	
+	if (lastDir == 6) {
+		c.fillText("P", player.x, player.y + player.h); 
+	} else {
+		c.save();
+		c.translate(player.x, player.y);
+		c.scale(-1, 1);
+		c.font = player.h + "px Georgia";
+		c.fillStyle = '#0f0';
+		c.textAlign = 'right';
+		c.fillText('P', 0, 0 + player.h);
+		c.restore();
+	}
+	
   // Draw enemies
   for (var i = 0; i < enemies.length; i++) {
 	var e = enemies[i];
 	if (e.hp > 0) {
 		c.fillStyle = "#"+e.col;
 		c.font = e.h+"px Arial";
-		c.fillText(e.alpha, e.x, e.y+e.h);
-		//c.fillRect(e.x, e.y, e.w, e.h);
+		c.fillText(e.alpha, e.x, e.y + e.h);
 		
 		// enemy hp, display if lower than full
 		if (e.hp < e.maxhp) {
