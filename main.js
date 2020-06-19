@@ -2,12 +2,21 @@
 function rect(x, y, w, h, col) {
   return { x: x, y: y, w: w, h: h, col: col }
 }
+function makeid(length) {
+   var result           = '';
+   var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'; //abcdefghijklmnopqrstuvwxyz
+   var charactersLength = characters.length;
+   for ( var i = 0; i < length; i++ ) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+   }
+   return result;
+}
 
 // Represent the level as a list of rectangles
 var rects = [
-  rect(0, 0, 800, 20, "fff"),
+  rect(0, 0, 10000, 20, "fff"),
   rect(0, 0, 20, 600, "fff"),
-  rect(0, 580, 800, 20, "fff"),
+  rect(200, 580, 800, 20, "fff"),
   rect(780, 0, 20, 600, "fff"),
   rect(0, 100, 100, 20, "fff"),
   rect(100, 120, 20, 20, "fff"),
@@ -15,14 +24,17 @@ var rects = [
   rect(140, 160, 20, 20, "fff"),
   rect(160, 180, 20, 20, "fff"),
   rect(180, 200, 20, 20, "fff"),
-  rect(200, 220, 100, 20, "fff")
+  rect(0, 2000, 50, 50, "fff"),
+  rect(180, 200, 20, 20, "fff")
 ]
 
 var enemies = [
-	{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: "B", hp: 50, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: "A", hp: 20, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: "B", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: "E", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
+	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 50, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: makeid(1), hp: 20, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: makeid(1), hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 550, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
 ]
 
 var punch = {
@@ -36,6 +48,24 @@ var punch = {
 var check = false;
 var firstblood = false;
 var points = 0;
+
+var world = {};
+world.minX = 0;
+world.minY = 0;
+world.maxX = 0;
+world.maxY = 0;
+
+for (var i=0; i < rects.length; i++) {
+	if (rects[i].x < world.minX) { world.minX = rects[i].x; }
+	if (rects[i].x+rects[i].w > world.maxX) { world.maxX = rects[i].x + rects[i].w; }
+	if (rects[i].y < world.minY) { world.minY = rects[i].y; }
+	if (rects[i].y+rects[i].h > world.maxY) { world.maxY = rects[i].y + rects[i].h; }
+}
+
+console.log("world.minX: "+world.minX);
+console.log("world.minY: "+world.minY);
+console.log("world.maxX: "+world.maxX);
+console.log("world.maxY: "+world.maxY);
 
 function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -140,6 +170,7 @@ function overlapTest(a, b) {
 // as far as we can without colliding with a solid rectangle
 function move(p, vx, vy) {
   // Move player along x axis
+  
   for (var i = 0; i < rects.length; i++) {
     var c = { x: p.x + vx, y: p.y, w: p.w, h: p.h }
     if (overlapTest(c, rects[i])) {
@@ -147,6 +178,7 @@ function move(p, vx, vy) {
       else if (vx > 0) vx = rects[i].x - p.x - p.w
     }
   }
+  
   p.x += vx
 
   // Move player along y axis
@@ -163,20 +195,24 @@ function move(p, vx, vy) {
 
 // Record which key codes are currently pressed
 var keys = {}
+var mouse = false;
 document.onkeydown = function(e) { keys[e.which] = true }
 document.onkeyup = function(e) { keys[e.which] = false }
+document.onmousedown = function(e) { mouse = true }
+document.onmouseup = function(e) { mouse  = false }
 
 // Player is a rectangle with extra properties
 //					x, y, w, h
 var player = rect(20, 20, 20, 42)
 player.velocity = { x: 0, y: 0 }
 player.onFloor = false
-
 // Updates the state of the game for the next frame
+
+//d:68, s: 83, a: 65, w: 87, 37 gauche, 39 droite
+
 function update() {
 
-
-  if ( (!!keys[39]) || (!!keys[37]) || (!!keys[38]) ) {
+  if ( (!!keys[87]) || (!!keys[65]) || (!!keys[83]) || (!!keys[39]) || (!!keys[37]) || (!!keys[38]) ) {
 	bg.play();
   }
   
@@ -186,9 +222,9 @@ function update() {
   }  
   
   // player is moving, play steps sounds
-  if ( (!!keys[39]) || (!!keys[37]) ) {
+  if ( (!!keys[68]) || (!!keys[65]) || (!!keys[39]) || (!!keys[37]) ) {
 	  
-	if (!!keys[39]) {
+	if (!!keys[39] || (!!keys[68])) {
 		lastDir = 6;
 	} else {
 		lastDir = 4;
@@ -197,7 +233,7 @@ function update() {
   }
 
   // player is pressing space, punch sound
-  if ( (!!keys[32]) ) {
+  if ( (!!keys[32]) || !!mouse ) {
 	sndPunchMiss.play();
 	if (lastDir==6) {
 		// punch right
@@ -209,7 +245,6 @@ function update() {
 		punch.active = true;
 		punch.x = player.x - Math.floor(Math.random() * Math.floor(20));
 		punch.y = player.y + 25;
-	
 	}
 	if (punch.active) {
 		// punch enemy
@@ -239,7 +274,7 @@ function update() {
   }
   
   // Update the velocity
-  player.velocity.x = 3 * (!!keys[39] - !!keys[37]) // right - left
+  player.velocity.x = 3 * ( ( (!!keys[39]) || (!!keys[68]) ) - ((!!keys[37]) || (!!keys[65]) ) ); // right - left
   player.velocity.y += 1 // Acceleration due to gravity
 
   // Move the player and detect collisions
@@ -268,8 +303,8 @@ function update() {
 	}
   }
 
-  // Only jump when we're on the floor
-  if (player.onFloor && keys[38]) {
+  // Only jump when we're on the floor. 
+  if (player.onFloor && (keys[38] || keys[87] ) ) {
     player.velocity.y = -13
     sndJump.play()
   }
@@ -292,13 +327,30 @@ function kill(eID) {
 	}
 }
 
+function clamp(value, min, max){
+    if(value < min) return min;
+    else if(value > max) return max;
+    return value;
+}
+
 // Renders a frame
 function draw() {
   var c = document.getElementById('screen').getContext('2d')
 
+  // setup cam
+	c.setTransform(1,0,0,1,0,0);//reset the transform matrix as it is cumulative
+	c.clearRect(0, 0, c.canvas.width, c.canvas.height);//clear the viewport AFTER the matrix is reset
+
+	//Clamp the camera position to the world bounds while centering the camera around the player                                             
+
+	var camX = clamp(-player.x + c.canvas.width / 5, world.minX, world.maxX );
+	var camY = clamp(-player.y + c.canvas.height / 5, world.minY, world.maxY);
+
+	c.translate( camX, camY ); 
+
   // Draw background
-  //c.fillStyle = '#222'
-  //c.fillRect(0, 0, c.canvas.width, c.canvas.height)
+  c.fillStyle = '#222'
+  c.fillRect(0, 0, c.canvas.width, c.canvas.height)
   var img = document.getElementById("bg");
   c.drawImage(img, 0, 0);
 
