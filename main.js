@@ -1,6 +1,6 @@
 // Create a rectangle with an (x, y) coordinate, a width, and a height
-function rect(x, y, w, h, col) {
-  return { x: x, y: y, w: w, h: h, col: col }
+function rect(x, y, w, h, col, rtype) {
+  return { x: x, y: y, w: w, h: h, col: col, rtype: rtype }
 }
 function makeid(length) {
    var result           = '';
@@ -14,24 +14,26 @@ function makeid(length) {
 
 // Represent the level as a list of rectangles
 var rects = [
-  rect(0, 0, 10000, 20, "fff"),
-  rect(0, 0, 20, 600, "fff"),
-  rect(200, 580, 800, 20, "fff"),
-  rect(780, 0, 20, 600, "fff"),
-  rect(0, 100, 100, 20, "fff"),
-  rect(100, 120, 20, 20, "fff"),
-  rect(120, 140, 20, 20, "fff"),
-  rect(140, 160, 20, 20, "fff"),
-  rect(160, 180, 20, 20, "fff"),
-  rect(180, 200, 20, 20, "fff"),
-  rect(0, 2000, 50, 2000, "fff"),
-  rect(180, 200, 20, 20, "fff")
+  rect(0, 0, 10000, 20, "ff0", "block"),
+  rect(0, 0, 20, 600, "f0f", "block"),
+  rect(200, 580, 800, 20, "00f", "block"),
+  rect(200, 880, 800, 800, "f00", "block"),
+  rect(780, 0, 20, 600, "fff", "block"),
+  rect(0, 100, 100, 20, "f0f", "block"),
+  rect(0, 100, 100, 20, "f0f", "block"),
+  rect(100, 20, 20, 100, "D2691E", "destructable"),
+  rect(120, 140, 20, 20, "fff", "block"),
+  rect(140, 160, 20, 20, "fff", "block"),
+  rect(160, 180, 20, 20, "fff", "block"),
+  rect(180, 200, 20, 20, "fff", "block"),
+  rect(0, 2000, 50, 50, "fff", "block"),
+  rect(180, 200, 20, 20, "fff", "block")
 ]
 
 var enemies = [
 	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: makeid(1), hp: 99, maxhp: 99, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: makeid(1), hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 550, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
@@ -61,6 +63,8 @@ for (var i=0; i < rects.length; i++) {
 	if (rects[i].y < world.minY) { world.minY = rects[i].y; }
 	if (rects[i].y+rects[i].h > world.maxY) { world.maxY = rects[i].y + rects[i].h; }
 }
+world.minY = -world.maxY;
+world.minX = -world.maxX;
 
 console.log("world.minX: "+world.minX);
 console.log("world.minY: "+world.minY);
@@ -95,7 +99,9 @@ function checkwords() {
 						addPoints(pts);
 					}
 					$("#def").html('<span class="word">'+word+':</span> "'+data.definition+'"');
-					if (word.length > 5) {
+					if (word.length > 10) {
+						sndGodlike.play();
+					} else if (word.length > 5) {
 						sndCatch.play();
 					} else {
 						sndCapture.play();
@@ -196,10 +202,10 @@ function move(p, vx, vy) {
 // Record which key codes are currently pressed
 var keys = {}
 var mouse = false;
-document.onkeydown = function(e) { keys[e.which] = true }
-document.onkeyup = function(e) { keys[e.which] = false }
-document.onmousedown = function(e) { mouse = true }
-document.onmouseup = function(e) { mouse  = false }
+document.onkeydown = function(e) { keys[e.which] = true; }
+document.onkeyup = function(e) { keys[e.which] = false; bg.play(); }
+document.onmousedown = function(e) { mouse = true; }
+document.onmouseup = function(e) { mouse  = false; bg.play(); }
 
 // Player is a rectangle with extra properties
 //					x, y, w, h
@@ -212,10 +218,6 @@ player.onFloor = false
 
 function update() {
 
-  if ( (!!keys[87]) || (!!keys[65]) || (!!keys[83]) || (!!keys[39]) || (!!keys[37]) || (!!keys[38]) ) {
-	bg.play();
-  }
-  
   // enter key check words
   if (!!keys[13]) {
 	checkwords();
@@ -252,15 +254,19 @@ function update() {
 			var p = { x: punch.x, y: punch.y, w: punch.w, h: punch.h }
 			var e = enemies[i];
 			if (overlapTest(p, e)) {
+				// knockback
+				if (lastDir==6) {
+					enemies[i].x += 5;
+				} else {
+					enemies[i].x -= 5;
+				}
+				// punch damage
 				e.hp -= 1;
+				
+				// kill or punch sound
 				if (e.hp <= 0) {
 					kill(i);
 				} else {
-					if (lastDir==6) {
-						enemies[i].x += 5;
-					} else {
-						enemies[i].x -= 5;
-					}
 					sndPunch.play();
 				}
 				punch.active = false;
@@ -273,6 +279,9 @@ function update() {
 			if (overlapTest(c, rects[i])) {
 				sndPunch.play();
 				punch.active = false;
+				if (rects[i].rtype == "destructable") {
+					rects.splice(i,1);
+				}
 			}
 		}
 	}
@@ -348,14 +357,14 @@ function draw() {
 
 	//Clamp the camera position to the world bounds while centering the camera around the player                                             
 
-	var camX = clamp(-player.x + c.canvas.width / 5, world.minX, world.maxX );
-	var camY = clamp(-player.y + c.canvas.height / 5, world.minY, world.maxY);
+	var camX = clamp(-player.x + c.canvas.width / 2, world.minX, world.maxX );
+	var camY = clamp(-player.y + c.canvas.height / 2, world.minY, world.maxY);
 
 	c.translate( camX, camY ); 
 
   // Draw background
   c.fillStyle = '#222'
-  c.fillRect(0, 0, c.canvas.width, c.canvas.height)
+  c.fillRect(0, 0, world.maxX, world.maxY)
   var img = document.getElementById("bg");
   c.drawImage(img, 0, 0);
 
