@@ -2,6 +2,12 @@
 <html><head>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Alpha Wars</title>
+  <script src="jquery.min.js"></script>
+  <script src="jquery-ui.min.js"></script>
+  <script src="jquery.cookie.js"></script>
+  <link rel="stylesheet" href="jquery-ui.structure.min.css">
+  <link rel="stylesheet" href="jquery-ui.theme.min.css">
+  jquery-ui.structure.min.css
   <style>
 	body {
 		text-align:center;
@@ -45,12 +51,43 @@
 	#footer p {
 		font-family: Arial;
 	}
+	#volume {
+		position: absolute;
+		top:0;
+		right:0;
+		color: #fff;
+		font-family: Arial;
+	}
+	.wrap {
+		margin: 0 auto;
+		width:1024px;
+		position:relative;
+	}
+  #eq1 > span, #eq2 > span {
+    height:120px; float:right; display:block;
+	margin-right:20px;
+  }	
+  .ui-state-default, .ui-widget-content .ui-state-default {
+    background: #00aa00;
+  }
   </style>
-  <script src="jquery.min.js"></script></body>
 </head>
 <body>
   <title>Alpha Wars</title>
   <div id="dash">
+	<div class="wrap">
+		<div id="volume">
+			Volumes<br><br>
+			Music &nbsp; SFX
+			<br><br>
+			<div id="eq1">
+				<span>30</span>
+			</div>
+			<div id="eq2">
+				<span>30</span>
+			</div>
+		</div>
+	</div>
 	<div id="points">
 		0
 	</div>
@@ -65,5 +102,54 @@
 		<p>&copy; <a href="http://LucLaverdure.com" target="_blank">Luc Laverdure</a></p>
 	</div>
   </div>
-  <script src="main.js"></script></body>
+  <script>
+    // setup graphic EQ
+
+    $( "#eq1 > span" ).each(function() {
+      // read initial values from markup and remove that
+      //var value = parseInt( $( this ).text(), 10 );
+		var value = 0;
+		if (typeof($.cookie('vol1')) != undefined) {
+			var value = $.cookie('vol1');
+		} else {
+			var value = 10;
+		}
+      $( this ).empty().slider({
+        value: value,
+        min: 1,
+		max: 100,
+        animate: true,
+        orientation: "vertical",
+		slide: function( event, ui ) {
+			$.cookie('vol1', ui.value);
+			changeVolume(ui.value, 1);
+		}
+      });
+    });
+
+	// unable to get which bar control is used, putting this duplicate for now
+    $( "#eq2 > span" ).each(function() {
+      // read initial values from markup and remove that
+		var value = 0;
+		if (typeof($.cookie('vol2')) != undefined) {
+			var value = $.cookie('vol2');
+		} else {
+			var value = 5;
+		}
+      $( this ).empty().slider({
+        value: value,
+        min: 1,
+		max: 100,
+        animate: true,
+        orientation: "vertical",
+		slide: function( event, ui ) {
+			$.cookie('vol2', ui.value);
+			changeVolume(ui.value, 2);
+		}
+      });
+    });
+	</script>
+  <script src="main.js"></script>
+  </body>
+  </body>
 </html>

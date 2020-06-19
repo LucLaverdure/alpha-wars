@@ -16,9 +16,9 @@ function makeid(length) {
 var rects = [
   rect(0, 0, 10000, 20, "ff0", "block"),
   rect(0, 0, 20, 600, "f0f", "block"),
-  rect(200, 580, 800, 20, "00f", "block"),
+  rect(200, 580, 1200, 20, "00f", "block"),
   rect(200, 880, 800, 800, "f00", "block"),
-  rect(780, 0, 20, 600, "fff", "block"),
+  rect(780, 0, 20, 300, "fff", "block"),
   rect(0, 100, 100, 20, "f0f", "block"),
   rect(0, 100, 100, 20, "f0f", "block"),
   rect(100, 20, 20, 100, "D2691E", "destructable"),
@@ -32,11 +32,20 @@ var rects = [
 
 var enemies = [
 	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: makeid(1), hp: 99, maxhp: 99, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: makeid(1), hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 550, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
+	{x: 250, y: 200, w: 100, h: 100, col: "ff0", alpha: "A", hp: 99, maxhp: 99, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 300, y: 200, w: 20, h: 80, col: "ff0", alpha: "L", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: "P", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 400, y: 200, w: 20, h: 60, col: "ff0", alpha: "H", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 500, y: 200, w: 20, h: 60, col: "ff0", alpha: ".", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 550, y: 200, w: 20, h: 60, col: "ff0", alpha: "W", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 600, y: 200, w: 20, h: 60, col: "ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 650, y: 200, w: 20, h: 60, col: "ff0", alpha: "R", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 700, y: 200, w: 20, h: 60, col: "ff0", alpha: "S", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 750, y: 200, w: 20, h: 60, col: "ff0", alpha: ".", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 800, y: 200, w: 20, h: 60, col: "ff0", alpha: "X", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 850, y: 200, w: 20, h: 60, col: "ff0", alpha: "Y", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 900, y: 200, w: 20, h: 60, col: "ff0", alpha: "Z", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
 ]
 
 var punch = {
@@ -66,10 +75,17 @@ for (var i=0; i < rects.length; i++) {
 world.minY = -world.maxY;
 world.minX = -world.maxX;
 
-console.log("world.minX: "+world.minX);
-console.log("world.minY: "+world.minY);
-console.log("world.maxX: "+world.maxX);
-console.log("world.maxY: "+world.maxY);
+var volumes={};
+if ($.cookie('vol1') != undefined) {
+	volumes.sfx = parseInt($.cookie('vol1'));
+} else {
+	volumes.sfx = 10;
+}
+if ($.cookie('vol2') != undefined) {
+	volumes.music = parseInt($.cookie('vol2'));
+} else {
+	volumes.music = 10;
+}
 
 function formatNumber(num) {
   return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,')
@@ -101,7 +117,7 @@ function checkwords() {
 					$("#def").html('<span class="word">'+word+':</span> "'+data.definition+'"');
 					if (word.length > 10) {
 						sndGodlike.play();
-					} else if (word.length > 5) {
+					} else if (word.length >= 5) {
 						sndCatch.play();
 					} else {
 						sndCapture.play();
@@ -118,18 +134,34 @@ function checkwords() {
 	setTimeout(function(){ check = false; }, 1000);
 }
 
-function sound(src) {
+function sound(src, bar) {
+	//
   this.sound = document.createElement("audio");
   this.sound.src = src;
   this.sound.setAttribute("preload", "auto");
   this.sound.setAttribute("controls", "none");
   this.sound.style.display = "none";
+  this.bar = bar;
   document.body.appendChild(this.sound);
   this.play = function(){
+	if (this.bar == 2) {
+		//music
+		this.volume(volumes.music);
+	} else {
+		//sfx
+		this.volume(volumes.sfx);
+	}
     this.sound.play();
   }
   this.stop = function(){
     this.sound.pause();
+  }
+  this.volume = function(v) {
+	if (v < 0) v = 0;
+	if (v > 100) v = 100;
+	v = v / 100;
+	console.log("b"+this.bar+":"+v);
+	this.sound.volume = v;
   }
 }
 
@@ -148,21 +180,45 @@ function createSound(path, copies) {
 
 // Want to be able to play at most 3 different copies of 'jump.wav' at once
 //var bg = createSound('music.mp3', 1)
-var bg = new sound("sounds/rocktronica.mp3");
-var sndJump = createSound('sounds/pl_jump1.wav', 3)
-var sndStep = new sound('sounds/pl_step1.wav')
-var sndPunchMiss  = new sound('sounds/punch-miss.wav')
-var sndPunch = new sound('sounds/punch-hit.mp3')
-var sndDie = new sound('sounds/pl_die1.wav')
-var sndFail = new sound('sounds/fail.mp3')
-var sndCapture  = new sound('sounds/capture.wav')
-var sndCatch  = new sound('sounds/nicecatch.wav')
-var sndDominate  = new sound('sounds/dominating.wav')
-var sndBlood  = new sound('sounds/firstblood.wav')
-var sndGodlike  = new sound('sounds/godlike.wav')
-var sndLost  = new sound('sounds/lostmatch.wav')
-var sndNextLevel  = new sound('sounds/proceed.wav')
-var sndUnstop  = new sound('sounds/unstoppable.wav')
+var bg = new sound("sounds/rocktronica.mp3", 2)
+var sndJump = new sound('sounds/pl_jump1.wav', 1)
+var sndStep = new sound('sounds/pl_step1.wav', 1)
+var sndPunchMiss  = new sound('sounds/punch-miss.wav', 1)
+var sndPunch = new sound('sounds/punch-hit.mp3', 1)
+var sndDie = new sound('sounds/pl_die1.wav', 1)
+var sndFail = new sound('sounds/fail.mp3', 1)
+var sndCapture  = new sound('sounds/capture.wav', 1)
+var sndCatch  = new sound('sounds/nicecatch.wav', 1)
+var sndDominate  = new sound('sounds/dominating.wav', 1)
+var sndBlood  = new sound('sounds/firstblood.wav', 1)
+var sndGodlike  = new sound('sounds/godlike.wav', 1)
+var sndLost  = new sound('sounds/lostmatch.wav', 1)
+var sndNextLevel  = new sound('sounds/proceed.wav', 1)
+var sndUnstop  = new sound('sounds/unstoppable.wav', 1)
+
+function changeVolume(val, whichBar) {
+	
+	if (whichBar == 2) {
+		//music
+		bg.volume(val);
+	} else {
+		// sounds
+		sndJump.volume(val);
+		sndStep.volume(val);
+		sndPunchMiss.volume(val);
+		sndPunch.volume(val);
+		sndDie.volume(val);
+		sndFail.volume(val);
+		sndCapture.volume(val);
+		sndCatch.volume(val);
+		sndDominate.volume(val);
+		sndBlood.volume(val);
+		sndGodlike.volume(val);
+		sndLost.volume(val);
+		sndNextLevel.volume(val);
+		sndUnstop.volume(val);
+	}
+}
 
 var lastDir = 6;
 
