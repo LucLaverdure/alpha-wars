@@ -24,16 +24,16 @@ var rects = [
   rect(140, 160, 20, 20, "fff"),
   rect(160, 180, 20, 20, "fff"),
   rect(180, 200, 20, 20, "fff"),
-  rect(0, 2000, 50, 50, "fff"),
+  rect(0, 2000, 50, 2000, "fff"),
   rect(180, 200, 20, 20, "fff")
 ]
 
 var enemies = [
-	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 50, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: makeid(1), hp: 20, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: makeid(1), hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 650, y: 200, w: 100, h: 100, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 20, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 200, y: 200, w: 20, h: 80, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 550, y: 200, w: 20, h: 60, col: "ff0", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
 ]
 
@@ -256,6 +256,11 @@ function update() {
 				if (e.hp <= 0) {
 					kill(i);
 				} else {
+					if (lastDir==6) {
+						enemies[i].x += 5;
+					} else {
+						enemies[i].x -= 5;
+					}
 					sndPunch.play();
 				}
 				punch.active = false;
