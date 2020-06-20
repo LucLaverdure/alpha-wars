@@ -1,0 +1,144 @@
+body {
+	text-align:center;
+	background: #000;
+}
+#screen {
+	margin: auto 0;
+}
+#kills {
+	color: #f00;
+	font-size:42px;
+	font-family: Arial;
+}
+#points {
+	color: #0f0;
+	font-size:42px;
+	float:right;
+	width:100%;
+	font-family: Arial;
+}
+#def {
+	margin-top:20px;
+	color: #fff;
+	font-style: italic;
+	font-family: Arial;
+	font-size:30px;
+}
+#def .word {
+	color: #a00;
+}
+#footer {
+	text-align:left;
+	color: #fff;
+	position:absolute;
+	left:0;
+	bottom:0;
+}
+#footer a {
+	color: #fff;
+}
+#footer p {
+	font-family: Arial;
+}
+#volume {
+	position: absolute;
+	top:0;
+	right:0;
+	color: #fff;
+	font-family: Arial;
+}
+.wrap {
+	margin: 0 auto;
+	width:1024px;
+	position:relative;
+	text-align:left;
+}
+#eq1 > span, #eq2 > span {
+height:120px; float:right; display:block;
+margin-right:20px;
+}	
+.ui-state-default, .ui-widget-content .ui-state-default {
+background: #00aa00;
+}
+input, select {
+	font-size:30px;
+	height:50px;
+	line-height:35px;
+	padding: 5px 10px;
+	box-sizing: border-box;
+	text-align:left;
+	background: #222;
+	border: 1px solid #0f0;
+	color: #fff;
+}
+input[type=button]:hover {
+	background: #0f0;
+	color: #000;
+}
+h2 {
+	text-align:left;
+	font-family: Arial;
+	color: #0f0;
+}
+.char, .stats {
+	float:left;
+	margin-left:100px;
+}
+
+.char .P {
+	font-size:400px;
+	color: #0f0;
+}
+
+#colpicker {
+	width:100px;
+	height:50px;
+}
+body #colorpicker_1 {
+	left:0 !important;
+	z-index: 999;
+}
+.styl p {
+	font-family: Arial;
+	color:#fff;
+	font-size:24px;
+	line-height:24px;
+}
+.styl p label {
+	background: #000;
+	color: #fff;
+	border: 1px solid #0f0;
+}
+.styl p label:hover, .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active, a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover {
+	background: #0f0;
+	color: #000;
+}
+body .styl input {
+	padding: 0;
+	margin: 0;
+	height:20px;
+	width:20px;
+}
+h1 {
+	color:#fff;
+	font-family: Arial;
+}
+
+body .char .P {
+  text-align: center;
+  animation-name: spin, depth;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-duration: 9s;
+}
+@keyframes spin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+@keyframes depth {
+  0% { text-shadow: 0 0 black; }
+  25% { text-shadow: 1px 0 black, 2px 0 black, 3px 0 black, 4px 0 black, 5px 0 black; }
+  50% { text-shadow: 0 0 black; }
+  75% { text-shadow: -1px 0 black, -2px 0 black, -3px 0 black, -4px 0 black, -5px 0 black; }
+  100% { text-shadow: 0 0 black; }
+}

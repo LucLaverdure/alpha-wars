@@ -5,72 +5,27 @@
   <script src="jquery.min.js"></script>
   <script src="jquery-ui.min.js"></script>
   <script src="jquery.cookie.js"></script>
+  <script src="colpick.js"></script>
   <link rel="stylesheet" href="jquery-ui.structure.min.css">
   <link rel="stylesheet" href="jquery-ui.theme.min.css">
-  jquery-ui.structure.min.css
-  <style>
-	body {
-		text-align:center;
-		background: #000;
-	}
-	#screen {
-		margin: auto 0;
-	}
-	#kills {
-		color: #f00;
-		font-size:42px;
-		font-family: Arial;
-	}
-	#points {
-		color: #0f0;
-		font-size:42px;
-		float:right;
-		width:100%;
-		font-family: Arial;
-	}
-	#def {
-		margin-top:20px;
-		color: #fff;
-		font-style: italic;
-		font-family: Arial;
-		font-size:30px;
-	}
-	#def .word {
-		color: #a00;
-	}
-	#footer {
-		text-align:left;
-		color: #fff;
-		position:absolute;
-		left:0;
-		bottom:0;
-	}
-	#footer a {
-		color: #fff;
-	}
-	#footer p {
-		font-family: Arial;
-	}
-	#volume {
-		position: absolute;
-		top:0;
-		right:0;
-		color: #fff;
-		font-family: Arial;
-	}
-	.wrap {
-		margin: 0 auto;
-		width:1024px;
-		position:relative;
-	}
-  #eq1 > span, #eq2 > span {
-    height:120px; float:right; display:block;
-	margin-right:20px;
-  }	
-  .ui-state-default, .ui-widget-content .ui-state-default {
-    background: #00aa00;
-  }
-  </style>
+  <link rel="stylesheet" href="colpick.css">
+  <link rel="stylesheet" href="main.css">
+  
+  <!-- Google Fonts -->
+	<link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Lato&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Slabo&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Montserrat&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=PT+Sans&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Prompt&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Work+Sans&display=swap" rel="stylesheet"> 
+  
 </head>
 <body>
   <title>Alpha Wars</title>
@@ -88,12 +43,60 @@
 			</div>
 		</div>
 	</div>
-	<div id="points">
+	<div id="points" style="display:none;">
 		0
 	</div>
-	<div>
+	<div id="canvas-wrap" style="display:none;">
 		<canvas id="screen" width="800" height="600"></canvas>
 		<img id="bg" src="bgs/2.jpg" style="display:none;" />
+	</div>
+	<div class="wrap">
+		<h1>Customize Character</h1>
+		<div class="step1">
+			<h2>My Alias</h2>
+			<p><input id="myname" type="text" name="name" value="" placeholder="Bob" /></p>
+			<p><input type="button" name="submitter" value="Submit" onclick="setLetter();"/></p>
+		</div>
+		<div class="step2" style="display:none;">
+			<div class="char">
+				<div class="P"></div>
+			</div>
+			<div class="stats">
+				<h2>Skin Tone</h2>
+				<div style="max-width:500px;position:relative;">
+					<input type="button" id="colpicker" value="Color" />
+				</div>
+				<h2>Family</h2>
+				<select id="fam" onchange="famSel();">
+					<option selected="selected" value="Arial">Arial</option>
+					<option value="Verdana">Verdana</option>
+					<option value="Trebuchet MS">Trebuchet MS</option>
+					<option value="Times New Roman">Times New Roman</option>
+					<option value="Courier">Courier</option>
+					<option value="Roboto">Roboto</option>
+					<option value="Open Sans">Open Sans</option>
+					<option value="Lato">Lato</option>
+					<option value="Slabo">Slabo</option>
+					<option value="Oswald">Oswald</option>
+					<option value="Source Sans Pro">Source Sans Pro</option>
+					<option value="Montserrat">Montserrat</option>
+					<option value="Raleway">Raleway</option>
+					<option value="PT Sans">PT Sans</option>
+					<option value="Lora">Lora</option>
+					<option value="Noto Sans">Noto Sans</option>
+					<option value="Lora">Nunito Sans</option>
+					<option value="Concert One">Concert One</option>
+					<option value="Prompt">Prompt</option>
+					<option value="Work Sans">Work Sans</option>
+				</select>
+				<div class="styl">
+					<h2>Style</h2>
+					<p><label><input id="ital" type="checkbox" onchange="ital();" value="i" /> Italic</label></p>
+					<p><label><input id="wee" type="checkbox" onchange="we();" value="b" /> Bold</label></p>
+				</div>
+				<input type="button" value="Submit" onclick="selectChar();" />
+			</div>
+		</div>
 	</div>
 	<div id="kills"></div>
 	<div id="def"></div>
@@ -103,8 +106,56 @@
 	</div>
   </div>
   <script>
+	$(".styl input").checkboxradio();
+	function selectChar() {
+		player.col = "#"+$(".colpick_hex_field input").val()
+		player.fam = $("#fam").val();
+		if ($("#wee").is(":checked")) {
+			player.style = "bold";
+		} else {
+			player.style = "normal";
+		}
+		if ($("#ital").is(":checked")) {
+			player.ital = "italic";
+		} else {
+			player.ital = "normal";
+		}
+		$("h1").fadeOut();
+		$(".step2").fadeOut();
+		$("#points").fadeIn();
+		$("#canvas-wrap").fadeIn();
+		world.gameon = true;
+		jump_start();
+	}
+	function ital() {
+		if ($("#ital").is(":checked")) {
+			$(".P").css("font-style", "italic");
+		} else {
+			$(".P").css("font-style", "normal");
+		}
+	}
+	function we() {
+		if ($("#wee").is(":checked")) {
+			$(".P").css("font-weight", "bold");
+		} else {
+			$(".P").css("font-weight", "normal");
+		}
+	}
+	function famSel() {
+		$(".P").css("font-family", $("#fam").val());
+	}
+	function setLetter() {
+		player.alpha = $("#myname").val().substr(0, 1).toUpperCase();
+		$(".step1").fadeOut();
+		$(".P").html(player.alpha);
+		$(".step2").fadeIn();
+		$('#colpicker').colpick({onSubmit: function(e) {
+			$(".P").css("color", "#"+$(".colpick_hex_field input").val());
+			$("#colorpicker_1").hide();
+		}});
+	}
+  
     // setup graphic EQ
-
     $( "#eq1 > span" ).each(function() {
       // read initial values from markup and remove that
       //var value = parseInt( $( this ).text(), 10 );

@@ -56,6 +56,19 @@ var punch = {
 	w: 10,
 	h: 10
 }
+
+var gun = {
+	dir: 6,
+	col: 255,
+	x: 0,
+	y: 0,
+	active: false,
+	w: 5,
+	h: 1,
+	bulletsMax: 6,
+	bullets: 6
+}
+
 var check = false;
 var firstblood = false;
 var points = 0;
@@ -65,6 +78,13 @@ world.minX = 0;
 world.minY = 0;
 world.maxX = 0;
 world.maxY = 0;
+world.gameon = false;
+
+var items = [];
+items[0] = "Fist";
+items[1] = "Gun";
+items[2] = "Platform Gun";
+items.active = 0;
 
 for (var i=0; i < rects.length; i++) {
 	if (rects[i].x < world.minX) { world.minX = rects[i].x; }
@@ -160,7 +180,7 @@ function sound(src, bar) {
 	if (v < 0) v = 0;
 	if (v > 100) v = 100;
 	v = v / 100;
-	console.log("b"+this.bar+":"+v);
+	//console.log("b"+this.bar+":"+v);
 	this.sound.volume = v;
   }
 }
@@ -181,10 +201,13 @@ function createSound(path, copies) {
 // Want to be able to play at most 3 different copies of 'jump.wav' at once
 //var bg = createSound('music.mp3', 1)
 var bg = new sound("sounds/rocktronica.mp3", 2)
-var sndJump = new sound('sounds/pl_jump1.wav', 1)
+var sndJump = new sound('sounds/jump.wav', 1)
+var sndJumpedOn = new sound('sounds/jumped-on.wav', 1)
+var sndBlockBlow = new sound('sounds/block-blow.wav', 1)
 var sndStep = new sound('sounds/pl_step1.wav', 1)
 var sndPunchMiss  = new sound('sounds/punch-miss.wav', 1)
 var sndPunch = new sound('sounds/punch-hit.mp3', 1)
+var sndPunch2 = new sound('sounds/punch-hit-2.wav', 1)
 var sndDie = new sound('sounds/pl_die1.wav', 1)
 var sndFail = new sound('sounds/fail.mp3', 1)
 var sndCapture  = new sound('sounds/capture.wav', 1)
@@ -195,6 +218,13 @@ var sndGodlike  = new sound('sounds/godlike.wav', 1)
 var sndLost  = new sound('sounds/lostmatch.wav', 1)
 var sndNextLevel  = new sound('sounds/proceed.wav', 1)
 var sndUnstop  = new sound('sounds/unstoppable.wav', 1)
+var sndGun  = new sound('sounds/gun.wav', 1)
+var sndGunReload  = new sound('sounds/reload.wav', 1)
+var sndClip  = new sound('sounds/menu.wav', 1)
+var sndBP  = new sound('sounds/build-block.wav', 1)
+var item0  = new sound('sounds/fist.wav', 1)
+var item1  = new sound('sounds/shout-gun.wav', 1)
+var item2  = new sound('sounds/platform.wav', 1)
 
 function changeVolume(val, whichBar) {
 	
@@ -258,8 +288,43 @@ function move(p, vx, vy) {
 // Record which key codes are currently pressed
 var keys = {}
 var mouse = false;
+var keysP = {}
 document.onkeydown = function(e) { keys[e.which] = true; }
 document.onkeyup = function(e) { keys[e.which] = false; bg.play(); }
+document.onkeypress = function(e) {
+	if (!world.gameon) return;
+	var k = e.code.toLowerCase();
+	if (k == "keyq") {
+	  items.active += 1;
+	  if (items.active >= items.length) items.active = 0;
+		e.preventDefault();
+	} else if ( (k == "keye") || (k == "tab") ) {
+	  items.active -= 1;
+	  if (items.active < 0) items.active = items.length - 1;
+		e.preventDefault();
+	}
+	if ( (k == "keyq") || (k == "keye") || (k == "tab") ) {
+		if (items.active == 0) {
+			item0.play();
+		} else if (items.active == 1) {
+			item1.play();
+		} else if (items.active == 2) {
+			item2.play();
+		}
+		e.preventDefault();
+	}
+	if ( (k == "space") && (items.active == 2) ) {
+		// platform gun
+		if (lastDir==6) {
+			// looking right
+			rects.push(rect(player.x + 50, player.y, 20, 20, "0f0", "destructable"));
+		} else {
+			// looking left
+			rects.push(rect(player.x - 50, player.y, 20, 20, "0f0", "destructable"));
+		}
+		e.preventDefault();
+	}
+}
 document.onmousedown = function(e) { mouse = true; }
 document.onmouseup = function(e) { mouse  = false; bg.play(); }
 
@@ -268,10 +333,12 @@ document.onmouseup = function(e) { mouse  = false; bg.play(); }
 var player = rect(20, 20, 20, 42)
 player.velocity = { x: 0, y: 0 }
 player.onFloor = false
+player.alpha = "P";
 // Updates the state of the game for the next frame
 
 //d:68, s: 83, a: 65, w: 87, 37 gauche, 39 droite
 
+//E: 69, Q: 81
 function update() {
 
   // enter key check words
@@ -292,54 +359,88 @@ function update() {
 
   // player is pressing space, punch sound
   if ( (!!keys[32]) || !!mouse ) {
-	sndPunchMiss.play();
-	if (lastDir==6) {
-		// punch right
-		punch.active = true;
-		punch.x = player.x + 40 - Math.floor(Math.random() * Math.floor(20));
-		punch.y = player.y + 25;
-	} else {
-		// punch left
-		punch.active = true;
-		punch.x = player.x - Math.floor(Math.random() * Math.floor(20));
-		punch.y = player.y + 25;
-	}
-	if (punch.active) {
-		// punch enemy
-		for (var i = 0; i < enemies.length; i++) {
-			var p = { x: punch.x, y: punch.y, w: punch.w, h: punch.h }
-			var e = enemies[i];
-			if (overlapTest(p, e)) {
-				// knockback
-				if (lastDir==6) {
-					enemies[i].x += 5;
-				} else {
-					enemies[i].x -= 5;
+	  
+	if (items.active == 0) {
+	  
+		sndPunchMiss.play();
+		if (lastDir==6) {
+			// punch right
+			punch.active = true;
+			punch.x = player.x + 40 - Math.floor(Math.random() * Math.floor(20));
+			punch.y = player.y + 25;
+		} else {
+			// punch left
+			punch.active = true;
+			punch.x = player.x - Math.floor(Math.random() * Math.floor(20));
+			punch.y = player.y + 25;
+		}
+		if (punch.active) {
+			// punch enemy
+			for (var i = 0; i < enemies.length; i++) {
+				var p = { x: punch.x, y: punch.y, w: punch.w, h: punch.h }
+				var e = enemies[i];
+				if (overlapTest(p, e)) {
+					// knockback
+					if (lastDir==6) {
+						enemies[i].x += 5;
+					} else {
+						enemies[i].x -= 5;
+					}
+					// punch damage
+					e.hp -= 1;
+					
+					// kill or punch sound
+					if (e.hp <= 0) {
+						kill(i);
+					} else {
+						if ( (Math.floor(Math.random() * 100) + 1) > 50) {
+							sndPunch.play();
+						} else {
+							sndPunch2.play();
+						}
+					}
+					punch.active = false;
 				}
-				// punch damage
-				e.hp -= 1;
-				
-				// kill or punch sound
-				if (e.hp <= 0) {
-					kill(i);
-				} else {
-					sndPunch.play();
+			}
+			
+			// punch wall
+			for (var i = 0; i < rects.length; i++) {
+				var c = { x: punch.x, y: punch.y, w: punch.w, h: punch.h }
+				if (overlapTest(c, rects[i])) {
+					punch.active = false;
+					if (rects[i].rtype == "destructable") {
+						// TODO: tone down until destroyed
+						//rects[i].col = col;
+						//if (col=="#000000") {
+							rects.splice(i,1);
+						//}
+					} 
+					sndBlockBlow.play();
 				}
-				punch.active = false;
 			}
 		}
+	} else if (items.active == 1) {
 		
-		// punch wall
-		for (var i = 0; i < rects.length; i++) {
-			var c = { x: punch.x, y: punch.y, w: punch.w, h: punch.h }
-			if (overlapTest(c, rects[i])) {
-				sndPunch.play();
-				punch.active = false;
-				if (rects[i].rtype == "destructable") {
-					rects.splice(i,1);
-				}
-			}
+		sndGun.play();
+		
+		// gun shot
+		if (lastDir==6) {
+			// looking right
+			gun.active = true;
+			gun.x = player.x + 40 - Math.floor(Math.random() * Math.floor(20));
+			gun.y = player.y + 25;
+			gun.dir = 6;
+		} else {
+			// looking left
+			gun.active = true;
+			gun.x = player.x - Math.floor(Math.random() * Math.floor(20));
+			gun.y = player.y + 25;
+			gun.dir = 4;
 		}
+
+	} else if (items.active == 2) {
+		// platform gun shot
+		sndBP.play();
 	}
   }
   
@@ -366,7 +467,7 @@ function update() {
 	if (expectedY != e.y) e.velocity.y = 0
 	// jump damage
 	if ( (player.velocity.y > 0) && (overlapTest(player, e)) ) {
-		sndPunch.play();
+		sndJumpedOn.play();
 		e.hp -= Math.floor(player.velocity.y / 2);
 		player.velocity.y = -10;
 		if (e.hp <= 0) kill(ii);
@@ -425,19 +526,23 @@ function draw() {
   c.drawImage(img, 0, 0);
 
   // Draw player
-	c.fillStyle = '#0f0'
-	c.font = player.h+"px Georgia";
+	//player.style = "normal";
+	//player.ital = "normal";
+
+  
+	c.fillStyle = player.col;
+	c.font = player.h+"px "+player.fam;
 	
 	if (lastDir == 6) {
-		c.fillText("P", player.x, player.y + player.h); 
+		c.fillText(player.alpha, player.x, player.y + player.h); 
 	} else {
 		c.save();
 		c.translate(player.x, player.y);
 		c.scale(-1, 1);
-		c.font = player.h + "px Georgia";
-		c.fillStyle = '#0f0';
+		c.fillStyle = player.col;
+		c.font = player.h+"px "+player.fam;
 		c.textAlign = 'right';
-		c.fillText('P', 0, 0 + player.h);
+		c.fillText(player.alpha, 0, 0 + player.h);
 		c.restore();
 	}
 	
@@ -483,10 +588,27 @@ function draw() {
 		punch.col = 255;
 	}
   }
+  
+	// draw item
+	c.save();	
+	c.translate(player.x-c.canvas.width / 2, player.y - c.canvas.height / 2);
+	c.fillStyle = '#000'
+	c.font = player.h+"px Arial";
+	c.fillText(items[items.active], 10, 10 + 20); 
+	c.fillStyle = '#fff'
+	c.fillText(items[items.active], 12, 12 + 20); 
+	c.restore();
+	
+  // draw bullets
+  if (gun.active) {
+	  if (gun.dir==6) gun.x += 10;
+	  if (gun.dir==4) gun.x -= 10;
+    c.fillRect(gun.x, gun.y, 5, 1)
+  }
+  
 }
 
-// Set up the game loop
-window.onload = function() {
+function jump_start() {
   setInterval(function() {
     update()
     draw()
