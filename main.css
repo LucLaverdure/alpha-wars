@@ -72,6 +72,7 @@ input, select {
 	color: #fff;
 }
 input[type=button]:hover {
+	cursor: pointer;
 	background: #0f0;
 	color: #000;
 }
@@ -123,7 +124,10 @@ h1 {
 	color:#fff;
 	font-family: Arial;
 }
-
+body .char {
+  min-height:300px;
+  min-width:300px;
+}
 body .char .P {
   text-align: center;
   animation-name: spin, depth;

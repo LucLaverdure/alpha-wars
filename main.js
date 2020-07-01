@@ -14,38 +14,38 @@ function makeid(length) {
 
 // Represent the level as a list of rectangles
 var rects = [
-  rect(0, 0, 10000, 20, "ff0", "block"),
-  rect(0, 0, 20, 600, "f0f", "block"),
-  rect(200, 580, 1200, 20, "00f", "block"),
-  rect(200, 880, 800, 800, "f00", "block"),
-  rect(780, 0, 20, 300, "fff", "block"),
-  rect(0, 100, 100, 20, "f0f", "block"),
-  rect(0, 100, 100, 20, "f0f", "block"),
-  rect(100, 20, 20, 100, "D2691E", "destructable"),
-  rect(120, 140, 20, 20, "fff", "block"),
-  rect(140, 160, 20, 20, "fff", "block"),
-  rect(160, 180, 20, 20, "fff", "block"),
-  rect(180, 200, 20, 20, "fff", "block"),
-  rect(0, 2000, 50, 50, "fff", "block"),
-  rect(180, 200, 20, 20, "fff", "block")
+  rect(0, 0, 10000, 20, "#ff0", "block"),
+  rect(0, 0, 20, 600, "#f0f", "block"),
+  rect(200, 580, 1200, 20, "#00f", "block"),
+  rect(200, 880, 800, 800, "#f00", "block"),
+  rect(780, 0, 20, 300, "#fff", "block"),
+  rect(0, 100, 100, 20, "#f0f", "block"),
+  rect(0, 100, 100, 20, "#f0f", "block"),
+  rect(100, 20, 20, 100, "#D2691E", "destructable"),
+  rect(120, 140, 20, 20, "#fff", "block"),
+  rect(140, 160, 20, 20, "#fff", "block"),
+  rect(160, 180, 20, 20, "#fff", "block"),
+  rect(180, 200, 20, 20, "#fff", "block"),
+  rect(0, 2000, 50, 50, "#fff", "block"),
+  rect(180, 200, 20, 20, "#fff", "block")
 ]
 
 var enemies = [
 	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 250, y: 200, w: 100, h: 100, col: "ff0", alpha: "A", hp: 99, maxhp: 99, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 300, y: 200, w: 20, h: 80, col: "ff0", alpha: "L", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 350, y: 200, w: 20, h: 60, col: "ff0", alpha: "P", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 400, y: 200, w: 20, h: 60, col: "ff0", alpha: "H", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 450, y: 200, w: 20, h: 60, col: "ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 500, y: 200, w: 20, h: 60, col: "ff0", alpha: ".", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 550, y: 200, w: 20, h: 60, col: "ff0", alpha: "W", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 600, y: 200, w: 20, h: 60, col: "ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 650, y: 200, w: 20, h: 60, col: "ff0", alpha: "R", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 700, y: 200, w: 20, h: 60, col: "ff0", alpha: "S", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 750, y: 200, w: 20, h: 60, col: "ff0", alpha: ".", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 800, y: 200, w: 20, h: 60, col: "ff0", alpha: "X", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 850, y: 200, w: 20, h: 60, col: "ff0", alpha: "Y", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 900, y: 200, w: 20, h: 60, col: "ff0", alpha: "Z", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
+	{x: 250, y: 200, w: 100, h: 100, col: "#ff0", alpha: "A", hp: 99, maxhp: 99, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 300, y: 200, w: 20, h: 80, col: "#ff0", alpha: "L", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 350, y: 200, w: 20, h: 60, col: "#ff0", alpha: "P", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 400, y: 200, w: 20, h: 60, col: "#ff0", alpha: "H", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 450, y: 200, w: 20, h: 60, col: "#ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 500, y: 200, w: 20, h: 60, col: "#ff0", alpha: ".", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 550, y: 200, w: 20, h: 60, col: "#ff0", alpha: "W", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 600, y: 200, w: 20, h: 60, col: "#ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 650, y: 200, w: 20, h: 60, col: "#ff0", alpha: "R", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 700, y: 200, w: 20, h: 60, col: "#ff0", alpha: "S", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 750, y: 200, w: 20, h: 60, col: "#ff0", alpha: ".", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 800, y: 200, w: 20, h: 60, col: "#ff0", alpha: "X", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 850, y: 200, w: 20, h: 60, col: "#ff0", alpha: "Y", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 900, y: 200, w: 20, h: 60, col: "#ff0", alpha: "Z", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false }
 ]
 
 var punch = {
@@ -290,9 +290,10 @@ var keys = {}
 var mouse = false;
 var keysP = {}
 document.onkeydown = function(e) { keys[e.which] = true; }
-document.onkeyup = function(e) { keys[e.which] = false; bg.play(); }
+document.onkeyup = function(e) { keys[e.which] = false; }
 document.onkeypress = function(e) {
 	if (!world.gameon) return;
+	bg.play();
 	var k = e.code.toLowerCase();
 	if (k == "keyq") {
 	  items.active += 1;
@@ -317,16 +318,16 @@ document.onkeypress = function(e) {
 		// platform gun
 		if (lastDir==6) {
 			// looking right
-			rects.push(rect(player.x + 50, player.y, 20, 20, "0f0", "destructable"));
+			rects.push(rect(player.x + 50, player.y+(player.h / 2), 20, 20, "0f0", "destructable"));
 		} else {
 			// looking left
-			rects.push(rect(player.x - 50, player.y, 20, 20, "0f0", "destructable"));
+			rects.push(rect(player.x - 50, player.y+(player.h / 2), 20, 20, "0f0", "destructable"));
 		}
 		e.preventDefault();
 	}
 }
 document.onmousedown = function(e) { mouse = true; }
-document.onmouseup = function(e) { mouse  = false; bg.play(); }
+document.onmouseup = function(e) { mouse  = false; }
 
 // Player is a rectangle with extra properties
 //					x, y, w, h
@@ -534,8 +535,10 @@ function draw() {
 	c.font = player.h+"px "+player.fam;
 	
 	if (lastDir == 6) {
+		// draw normal
 		c.fillText(player.alpha, player.x, player.y + player.h); 
 	} else {
+		// draw mirrored
 		c.save();
 		c.translate(player.x, player.y);
 		c.scale(-1, 1);
@@ -550,7 +553,7 @@ function draw() {
   for (var i = 0; i < enemies.length; i++) {
 	var e = enemies[i];
 	if (e.hp > 0) {
-		c.fillStyle = "#"+e.col;
+		c.fillStyle = e.col;
 		c.font = e.h+"px Arial";
 		c.fillText(e.alpha, e.x, e.y + e.h);
 		
@@ -572,7 +575,7 @@ function draw() {
   // Draw levels
   for (var i = 0; i < rects.length; i++) {
     var r = rects[i]
-	c.fillStyle = '#'+r.col;
+	c.fillStyle = r.col;
     c.fillRect(r.x, r.y, r.w, r.h)
   }
 
@@ -614,3 +617,160 @@ function jump_start() {
     draw()
   }, 1000 / 60)
 }
+
+
+
+/******************************************************/
+
+	$(".styl input").checkboxradio();
+	$(function() {
+		// set defaults
+		player.col = "#00ff00";
+		player.style = "normal";
+		player.ital = "normal";
+		player.alpha = "P";
+		player.name = "Player1";
+		player.fam = "Arial";
+
+		// set from cookie
+		if (typeof ($.cookie('player_col')) != "undefined") { player.col = $.cookie('player_col'); }
+		if (typeof ($.cookie('player_fam')) != "undefined") { player.fam = $.cookie('player_fam'); }
+		if (typeof ($.cookie('player_style')) != "undefined") { player.style = $.cookie('player_style'); }
+		if (typeof ($.cookie('player_ital')) != "undefined") { player.ital = $.cookie('player_ital'); }
+		if (typeof ($.cookie('player_alpha')) != "undefined") { player.alpha = $.cookie('player_alpha'); }
+		if (typeof ($.cookie('player_name')) != "undefined") { player.name = $.cookie('player_name'); }
+
+		// set name
+		$("#myname").val(player.name);
+		// set character
+		$(".P").html(player.alpha);
+		
+		// sort font families
+		var $divs = $("#fam option")
+		var alphabeticallyOrderedDivs = $divs.sort(function (a, b) {
+			return $(a).text() > $(b).text();
+		});
+		$("#fam").html(alphabeticallyOrderedDivs);
+		
+		// set font family
+		$("#fam").val(player.fam);
+		$(".P").css("font-family", player.fam);
+		
+		// set color
+		$("#picker").drawrpalette();
+		$("#picker").drawrpalette("set", player.col);
+		$(".P").css("color", player.col);
+		$("#picker").drawrpalette().on("preview.drawrpalette",function(event,hexcolor){
+			// preview: don`t change
+			/*player.col = hexcolor;
+			$(".P").css("color", hexcolor);*/
+		}).on("choose.drawrpalette",function(event,hexcolor){
+			player.col = hexcolor;
+			$(".P").css("color", hexcolor);
+		});
+		// set italic
+		if (player.ital != "normal") $("#ital").prop( "checked", true);
+		$('#ital').button( "refresh" );
+		// set bold
+		if (player.style != "normal") $("#wee").prop( "checked", true);
+		$('#wee').button( "refresh" );
+	});
+	
+	function selectChar() {
+		if (player.name.trim() == "") {
+			player.name = "Player1";
+		}
+		player.col = $("#picker").val();
+		player.fam = $("#fam").val();
+		if ($("#wee").is(":checked")) {
+			player.style = "bold";
+		} else {
+			player.style = "normal";
+		}
+		if ($("#ital").is(":checked")) {
+			player.ital = "italic";
+		} else {
+			player.ital = "normal";
+		}
+		$("h1").fadeOut();
+		$(".step2").fadeOut();
+		$("#points").fadeIn();
+		$("#canvas-wrap").fadeIn();
+		world.gameon = true;
+		
+		// save configs
+		$.cookie('player_col', player.col);
+		$.cookie('player_fam', player.fam);
+		$.cookie('player_style', player.style);
+		$.cookie('player_ital', player.ital);
+		$.cookie('player_alpha', player.alpha);
+		$.cookie('player_name', player.name);
+		jump_start();
+	}
+	function ital() {
+		if ($("#ital").is(":checked")) {
+			$(".P").css("font-style", "italic");
+		} else {
+			$(".P").css("font-style", "normal");
+		}
+	}
+	function we() {
+		if ($("#wee").is(":checked")) {
+			$(".P").css("font-weight", "bold");
+		} else {
+			$(".P").css("font-weight", "normal");
+		}
+	}
+	function famSel() {
+		$(".P").css("font-family", $("#fam").val());
+	}
+	function setLetter() {
+		player.name = $("#myname").val().trim();
+		player.alpha = $("#myname").val().substr(0, 1).toUpperCase();
+		$(".P").html(player.alpha);
+	}
+
+    // setup graphic EQ
+    $( "#eq1 > span" ).each(function() {
+      // read initial values from markup and remove that
+      //var value = parseInt( $( this ).text(), 10 );
+		var value = 0;
+		if (typeof($.cookie('vol1')) != undefined) {
+			var value = $.cookie('vol1');
+		} else {
+			var value = 10;
+		}
+      $( this ).empty().slider({
+        value: value,
+        min: 1,
+		max: 100,
+        animate: true,
+        orientation: "vertical",
+		slide: function( event, ui ) {
+			$.cookie('vol1', ui.value);
+			changeVolume(ui.value, 1);
+		}
+      });
+    });
+
+	// unable to get which bar control is used, putting this duplicate for now
+    $( "#eq2 > span" ).each(function() {
+      // read initial values from markup and remove that
+		var value = 0;
+		if (typeof($.cookie('vol2')) != undefined) {
+			var value = $.cookie('vol2');
+		} else {
+			var value = 5;
+		}
+      $( this ).empty().slider({
+        value: value,
+        min: 1,
+		max: 100,
+        animate: true,
+        orientation: "vertical",
+		slide: function( event, ui ) {
+			$.cookie('vol2', ui.value);
+			changeVolume(ui.value, 2);
+		}
+      });
+    });

@@ -3,12 +3,12 @@
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <title>Alpha Wars</title>
   <script src="jquery.min.js"></script>
-  <script src="jquery-ui.min.js"></script>
   <script src="jquery.cookie.js"></script>
-  <script src="colpick.js"></script>
+  <script src="jquery-ui.min.js"></script>
+  <script src="jquery.drawrpalette-min.js"></script>
+  
   <link rel="stylesheet" href="jquery-ui.structure.min.css">
   <link rel="stylesheet" href="jquery-ui.theme.min.css">
-  <link rel="stylesheet" href="colpick.css">
   <link rel="stylesheet" href="main.css">
   
   <!-- Google Fonts -->
@@ -52,19 +52,16 @@
 	</div>
 	<div class="wrap">
 		<h1>Customize Character</h1>
-		<div class="step1">
-			<h2>My Alias</h2>
-			<p><input id="myname" type="text" name="name" value="" placeholder="Bob" /></p>
-			<p><input type="button" name="submitter" value="Submit" onclick="setLetter();"/></p>
-		</div>
-		<div class="step2" style="display:none;">
+		<div class="step2">
 			<div class="char">
-				<div class="P"></div>
+				<div class="P">P</div>
 			</div>
 			<div class="stats">
+				<h2>My Alias</h2>
+				<p><input id="myname" type="text" name="name" value="" onchange="setLetter();" onkeyup="setLetter()" /></p>
 				<h2>Skin Tone</h2>
 				<div style="max-width:500px;position:relative;">
-					<input type="button" id="colpicker" value="Color" />
+					<input type="text" id="picker" value="#00ff00"/>
 				</div>
 				<h2>Family</h2>
 				<select id="fam" onchange="famSel();">
@@ -94,7 +91,7 @@
 					<p><label><input id="ital" type="checkbox" onchange="ital();" value="i" /> Italic</label></p>
 					<p><label><input id="wee" type="checkbox" onchange="we();" value="b" /> Bold</label></p>
 				</div>
-				<input type="button" value="Submit" onclick="selectChar();" />
+				<input type="button" value="Save & Continue" onclick="selectChar();" />
 			</div>
 		</div>
 	</div>
@@ -105,101 +102,6 @@
 		<p>&copy; <a href="http://LucLaverdure.com" target="_blank">Luc Laverdure</a></p>
 	</div>
   </div>
-  <script>
-	$(".styl input").checkboxradio();
-	function selectChar() {
-		player.col = "#"+$(".colpick_hex_field input").val()
-		player.fam = $("#fam").val();
-		if ($("#wee").is(":checked")) {
-			player.style = "bold";
-		} else {
-			player.style = "normal";
-		}
-		if ($("#ital").is(":checked")) {
-			player.ital = "italic";
-		} else {
-			player.ital = "normal";
-		}
-		$("h1").fadeOut();
-		$(".step2").fadeOut();
-		$("#points").fadeIn();
-		$("#canvas-wrap").fadeIn();
-		world.gameon = true;
-		jump_start();
-	}
-	function ital() {
-		if ($("#ital").is(":checked")) {
-			$(".P").css("font-style", "italic");
-		} else {
-			$(".P").css("font-style", "normal");
-		}
-	}
-	function we() {
-		if ($("#wee").is(":checked")) {
-			$(".P").css("font-weight", "bold");
-		} else {
-			$(".P").css("font-weight", "normal");
-		}
-	}
-	function famSel() {
-		$(".P").css("font-family", $("#fam").val());
-	}
-	function setLetter() {
-		player.alpha = $("#myname").val().substr(0, 1).toUpperCase();
-		$(".step1").fadeOut();
-		$(".P").html(player.alpha);
-		$(".step2").fadeIn();
-		$('#colpicker').colpick({onSubmit: function(e) {
-			$(".P").css("color", "#"+$(".colpick_hex_field input").val());
-			$("#colorpicker_1").hide();
-		}});
-	}
-  
-    // setup graphic EQ
-    $( "#eq1 > span" ).each(function() {
-      // read initial values from markup and remove that
-      //var value = parseInt( $( this ).text(), 10 );
-		var value = 0;
-		if (typeof($.cookie('vol1')) != undefined) {
-			var value = $.cookie('vol1');
-		} else {
-			var value = 10;
-		}
-      $( this ).empty().slider({
-        value: value,
-        min: 1,
-		max: 100,
-        animate: true,
-        orientation: "vertical",
-		slide: function( event, ui ) {
-			$.cookie('vol1', ui.value);
-			changeVolume(ui.value, 1);
-		}
-      });
-    });
-
-	// unable to get which bar control is used, putting this duplicate for now
-    $( "#eq2 > span" ).each(function() {
-      // read initial values from markup and remove that
-		var value = 0;
-		if (typeof($.cookie('vol2')) != undefined) {
-			var value = $.cookie('vol2');
-		} else {
-			var value = 5;
-		}
-      $( this ).empty().slider({
-        value: value,
-        min: 1,
-		max: 100,
-        animate: true,
-        orientation: "vertical",
-		slide: function( event, ui ) {
-			$.cookie('vol2', ui.value);
-			changeVolume(ui.value, 2);
-		}
-      });
-    });
-	</script>
   <script src="main.js"></script>
   </body>
   </body>
