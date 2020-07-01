@@ -146,3 +146,33 @@ body .char .P {
   75% { text-shadow: -1px 0 black, -2px 0 black, -3px 0 black, -4px 0 black, -5px 0 black; }
   100% { text-shadow: 0 0 black; }
 }
+
+#coffee {
+	margin-top:200px;
+	position:relative;
+	display:block;
+	color: #fff;
+	text-decoration:none;
+	opacity: 0.2;
+}
+#coffee:hover {
+	opacity: 1;
+	color: #afa;
+}
+
+#coffee img {
+	max-width:85px;
+	right:0;
+	position:absolute;
+}
+
+#coffee p{
+	margin-top:75px;
+}
+
+#volume > div {
+	opacity: 0.2;
+}
+#volume:hover > div{
+	opacity: 1;
+}

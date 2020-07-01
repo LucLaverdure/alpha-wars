@@ -482,12 +482,16 @@ function update() {
   }
 }
 
+function isLetter(str) {
+  return str.length === 1 && str.match(/[a-z]/i);
+}
+
 function kill(eID) {
 	enemies[eID].hp = 0;
 	sndDie.play();
 
 	// add killed letter
-	$("#kills").append(""+enemies[eID].alpha);
+	if (isLetter(enemies[eID].alpha)) $("#kills").append(""+enemies[eID].alpha);
 
 	// add 1 point
 	addPoints(1);
@@ -679,6 +683,7 @@ function jump_start() {
 	function selectChar() {
 		if (player.name.trim() == "") {
 			player.name = "Player1";
+			player.alpha = "P";
 		}
 		player.col = $("#picker").val();
 		player.fam = $("#fam").val();
