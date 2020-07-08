@@ -340,7 +340,212 @@ player.alpha = "P";
 //d:68, s: 83, a: 65, w: 87, 37 gauche, 39 droite
 
 //E: 69, Q: 81
+
+// build enemy AI
+function enemy_update(ai) {
+	
+	// movement
+	ai.velocity.y += 1 // Acceleration due to gravity
+	var wasOnFloor = ai.onFloor;
+	if (typeof(ai.vx) == "undefined") {
+		ai.vx = ( (Math.random() * 100 + 1) > 50) ? -1 : 1;
+	}
+	ai.velocity.x = Math.floor(Math.random() * 3) * ai.vx;
+	var expectedY = ai.y + ai.velocity.y
+	move(ai, ai.velocity.x, ai.velocity.y);
+	ai.onFloor = (expectedY > ai.y);
+	if (!ai.onFloor && wasOnFloor) {
+		// jump back on platform
+		ai.vx *= -1;
+		ai.velocity.y = -10;
+	} else {
+		// sit on platform
+		if (expectedY != ai.y) ai.velocity.y = 0
+	}
+	
+	// jump damage
+	if ( (player.velocity.y > 0) && (overlapTest(player, ai)) ) {
+		sndJumpedOn.play();
+		ai.hp -= Math.floor(player.velocity.y / 2);
+		player.velocity.y = -10;
+		if (ai.hp <= 0) kill(ii);
+	}
+
+	ai.counter += 1
+	switch (ai.alpha.toUpperCase()) {
+		case "A":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 60)) {
+				// shoot arrow
+				ai.counter = 0;
+			}
+			break;
+		case "B":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 70)) {
+				// shoot bomb
+				ai.counter = 0;
+			}
+			break;
+		case "C":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 20)) {
+				// jump towards you
+				ai.counter = 0;
+			}
+			break;
+		case "D":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 20)) {
+				// dodge???
+				ai.counter = 0;
+			}
+			break;
+		case "E":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 20)) {
+				// electrocute floor???
+				ai.counter = 0;
+			}
+			break;
+		case "F":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 40)) {
+				// spit fire
+				ai.counter = 0;
+			}
+			break;
+		case "G":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 40)) {
+				// shoot gun
+				ai.counter = 0;
+			}
+			break;
+		case "H":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 40)) {
+				// shoots health pack (h character)
+				ai.counter = 0;
+			}
+			break;
+		case "I":
+			// is invisible
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// punch
+				ai.counter = 0;
+			}
+			break;
+		case "J":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// ???
+				ai.counter = 0;
+			}
+			break;
+		case "K":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// kick with knockback
+				ai.counter = 0;
+			}
+			break;
+		case "L":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// ???
+				ai.counter = 0;
+			}
+			break;
+		case "M":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// spawn lowercase letter
+				ai.counter = 0;
+			}
+			break;
+		case "N":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// Ninja???
+				ai.counter = 0;
+			}
+			break;
+		case "O":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// ???
+				ai.counter = 0;
+			}
+			break;
+		case "P":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// Punch
+				ai.counter = 0;
+			}
+			break;
+		case "Q":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// Spawns quickness letter (q)
+				ai.counter = 0;
+			}
+			break;
+		case "R":
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
+				// Rage???
+				ai.counter = 0;
+			}
+			break;
+		case "S":
+			if (ai.counter >= Math.floor(Math.random() * 150 + 200)) {
+				// Spawn Uppercase Letter
+				ai.counter = 0;
+			}
+			break;
+		case "T":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// Teleport
+				ai.counter = 0;
+			}
+			break;
+		case "U":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// ???
+				ai.counter = 0;
+			}
+			break;
+		case "V":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// Vampire, leech life
+				ai.counter = 0;
+			}
+			break;
+		case "W":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// Waller, make wall
+				ai.counter = 0;
+			}
+			break;
+		case "X":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// ???
+				ai.counter = 0;
+			}
+			break;
+		case "Y":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// Yells, knockback
+				ai.counter = 0;
+			}
+			break;
+		case "Z":
+			if (ai.counter >= Math.floor(Math.random() * 50 + 100)) {
+				// Spawn lowercase Zzz, makes you sleep
+				ai.counter = 0;
+			}
+			break;
+	}
+
+	// attacks
+	switch (ai.alpha.toUpperCase()) {
+		case "A":
+			break;
+	}
+
+
+}
+
 function update() {
+
+  for (var ai = 0;ai < enemies.length; ai++) {
+	  enemy_update(enemies[ai]);
+  }
 
   // enter key check words
   if (!!keys[13]) {
@@ -481,25 +686,6 @@ function update() {
   player.onFloor = (expectedY > player.y)
   if (expectedY != player.y) player.velocity.y = 0
 
-
-	// move enemies
-  // Update the velocity
-  for (var ii = 0; ii < enemies.length; ii++) {
-	var e = enemies[ii];
-	e.velocity.y += 1 // Acceleration due to gravity
-	// todo: MOVE AI
-	var expectedY = e.y + e.velocity.y
-	move(e, e.velocity.x, e.velocity.y)
-	e.onFloor = (expectedY > e.y)
-	if (expectedY != e.y) e.velocity.y = 0
-	// jump damage
-	if ( (player.velocity.y > 0) && (overlapTest(player, e)) ) {
-		sndJumpedOn.play();
-		e.hp -= Math.floor(player.velocity.y / 2);
-		player.velocity.y = -10;
-		if (e.hp <= 0) kill(ii);
-	}
-  }
 
   // Only jump when we're on the floor. 
   if (player.onFloor && (keys[38] || keys[87] ) ) {
