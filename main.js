@@ -342,7 +342,7 @@ player.alpha = "P";
 //E: 69, Q: 81
 
 // build enemy AI
-function enemy_update(ai) {
+function enemy_update(ai, ii) {
 	
 	// movement
 	ai.velocity.y += 1 // Acceleration due to gravity
@@ -544,7 +544,7 @@ function enemy_update(ai) {
 function update() {
 
   for (var ai = 0;ai < enemies.length; ai++) {
-	  enemy_update(enemies[ai]);
+	  enemy_update(enemies[ai], ai);
   }
 
   // enter key check words
