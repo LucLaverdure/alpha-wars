@@ -447,6 +447,32 @@ function update() {
   
   // Update the velocity
   player.velocity.x = 3 * ( ( (!!keys[39]) || (!!keys[68]) ) - ((!!keys[37]) || (!!keys[65]) ) ); // right - left
+  
+  // air movement
+  if (!player.onFloor) {
+	if (lastDir == 6)
+		player.velocity.x = 3;
+	else
+		player.velocity.x = -3;
+  }
+  
+  // running
+  if (player.onFloor) {
+	var run = ( ( (!!keys[39]) || (!!keys[68]) ) - ((!!keys[37]) || (!!keys[65]) ) );
+	if ( (run > 0) || (run < 0) ) {
+		player.runinc += 1;
+	} else {
+		player.runinc = 0;
+	}
+	if (player.runinc > 40) {
+		if (player.runinc > 60) {
+			player.runinc = 60;
+		}
+		player.velocity.x = (Math.floor(player.runinc / 10) * run); // right - left
+	}
+  }
+  
+  
   player.velocity.y += 1 // Acceleration due to gravity
 
   // Move the player and detect collisions
