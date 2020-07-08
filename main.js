@@ -33,7 +33,7 @@ var rects = [
 var enemies = [
 	//{x: 60, y: 200, w: 20, h: 50, col: "ff0", alpha: makeid(1), hp: 1, maxhp: 50, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 250, y: 200, w: 100, h: 100, col: "#ff0", alpha: "A", hp: 99, maxhp: 99, velocity: {x: 0, y: 0}, onFloor: false },
-	{x: 300, y: 200, w: 20, h: 80, col: "#ff0", alpha: "L", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
+	{x: 300, y: 200, w: 20, h: 80, col: "#ff0", alpha: "C", hp: 30, maxhp: 30, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 350, y: 200, w: 20, h: 60, col: "#ff0", alpha: "P", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 400, y: 200, w: 20, h: 60, col: "#ff0", alpha: "H", hp: 1, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
 	{x: 450, y: 200, w: 20, h: 60, col: "#ff0", alpha: "A", hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false },
@@ -347,12 +347,22 @@ function enemy_update(ai, ii) {
 	// movement
 	ai.velocity.y += 1 // Acceleration due to gravity
 	var wasOnFloor = ai.onFloor;
+	var wasOnWall = ai.onWall;
+
 	if (typeof(ai.vx) == "undefined") {
 		ai.vx = ( (Math.random() * 100 + 1) > 50) ? -1 : 1;
 	}
 	ai.velocity.x = Math.floor(Math.random() * 3) * ai.vx;
 	var expectedY = ai.y + ai.velocity.y
+	var expectedX = ai.x + ai.velocity.x
 	move(ai, ai.velocity.x, ai.velocity.y);
+
+	ai.onWall = (expectedX != ai.x);
+	if (ai.onWall && !wasOnWall) {
+		ai.vx *= -1;
+		ai.velocity.y = -10;
+	}
+	
 	ai.onFloor = (expectedY > ai.y);
 	if (!ai.onFloor && wasOnFloor) {
 		// jump back on platform
@@ -371,7 +381,8 @@ function enemy_update(ai, ii) {
 		if (ai.hp <= 0) kill(ii);
 	}
 
-	ai.counter += 1
+	if (typeof(ai.counter)=="undefined") ai.counter = 0;
+	ai.counter += 1;
 	switch (ai.alpha.toUpperCase()) {
 		case "A":
 			if (ai.counter >= Math.floor(Math.random() * 25 + 60)) {
@@ -386,8 +397,15 @@ function enemy_update(ai, ii) {
 			}
 			break;
 		case "C":
-			if (ai.counter >= Math.floor(Math.random() * 25 + 20)) {
+			// The Crusher!
+			if (ai.counter >= Math.floor(Math.random() * 25 + 50)) {
 				// jump towards you
+				ai.onFloor = false;
+				ai.velocity.y = -10;
+				if (player.x < ai.x)
+					ai.vx = -1;
+				else
+					ai.vx = 1;
 				ai.counter = 0;
 			}
 			break;
@@ -486,6 +504,7 @@ function enemy_update(ai, ii) {
 			if (ai.counter >= Math.floor(Math.random() * 150 + 200)) {
 				// Spawn Uppercase Letter
 				ai.counter = 0;
+				enemies.push({x: ai.x, y: ai.y, w: 20, h: 60, col: "lightblue", alpha: makeid(1), hp: 10, maxhp: 10, velocity: {x: 0, y: 0}, onFloor: false });
 			}
 			break;
 		case "T":
